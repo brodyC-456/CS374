@@ -1,4 +1,1 @@
-hello
-hi there
-go higher
 test
