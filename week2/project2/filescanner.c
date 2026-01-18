@@ -24,6 +24,32 @@ int file_read_error(char* pathname){
     return ERROR_CODE;
 }
 
+// Forward declaration so the helper knows what count_bytes is
+int count_bytes(char *dir_path);
+
+// Handles the logic of regular files and directories, and recursively calls count_bytes for directories
+int count_bytes_helper(char* pathname, struct stat buf, struct dirent *de){
+    // Use st_mode macros to determine file type
+    switch (buf.st_mode & S_IFMT){
+        // Add size of regular files to the total
+        case S_IFREG:
+            return buf.st_size;
+            break;
+        // Recurse into other directories, adding their size to the total
+        case S_IFDIR:
+            if(strcmp(de->d_name, ".") && strcmp(de->d_name, "..")){
+                return count_bytes(pathname);
+            }
+            else{
+                // Ignore .. and .
+                return 0;
+            }
+        // Ignore all other file types
+        default:
+            return 0;
+    }
+}
+
 // Returns the size of a directory using its pathname
 int count_bytes(char* dir_path){
 
@@ -42,26 +68,8 @@ int count_bytes(char* dir_path){
         snprintf(new_path, sizeof(new_path), "%s/%s", dir_path, de->d_name);
         struct stat buf = get_lstat(new_path);
 
-        // Use st_mode macros to determine file type
-        switch (buf.st_mode & S_IFMT){
-            // Add size of regular files to the total
-            case S_IFREG:
-                byte_len += buf.st_size;
-                break;
-            // Recurse into other directories, adding their size to the total
-            case S_IFDIR:
-                if(strcmp(de->d_name, ".") && strcmp(de->d_name, "..")){
-                    byte_len += count_bytes(new_path);
-                    break;
-                }
-                else{
-                    // Ignore .. and .
-                    break;
-                }
-            // Ignore all other file types
-            default:
-                break;
-        }
+        // Calls helper to decide what to do with the file
+        byte_len += count_bytes_helper(new_path, buf, de); 
     }
     // Close the directory and print out the total byte_length
     closedir(dir);
