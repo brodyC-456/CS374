@@ -87,6 +87,5 @@ int main(void){
 
         // Run the Command
         run_command(tokens);
-        
     }
 }

@@ -98,5 +98,3 @@ int main(int argc, char *argv[]){
 
     count_bytes(dir_path);
 }
-
-
