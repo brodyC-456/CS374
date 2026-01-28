@@ -1,5 +1,7 @@
 lswc
+readirout
 
 
 *.o
 *.exe
+*.txt
