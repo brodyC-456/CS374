@@ -1,5 +1,5 @@
 appendlog
+log.dat
 
 .o*
 .exe*
-.dat*
