@@ -1,0 +1,5 @@
+appendlog
+
+.o*
+.exe*
+.dat*
