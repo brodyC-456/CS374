@@ -1,0 +1,6 @@
+gray_scaler
+
+
+*.ppm
+*.png
+*.o
