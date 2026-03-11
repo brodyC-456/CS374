@@ -65,11 +65,12 @@ void *run_cons(void *arg)
 
     while(1){
         sem_wait(items);
+        sem_wait(mutex);
         // Recieve the signal, but keep going if there's still events in the buffer
         if (consumers_done == 1 && eventbuf_empty(buf) == 1){
+            sem_post(mutex);
             break;
         }
-        sem_wait(mutex);
         int event_num = eventbuf_get(buf);
         printf("C%i: got event %i\n", *id, event_num);
         sem_post(mutex);
